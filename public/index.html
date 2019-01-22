@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body style="background: rgb(206, 205, 205)">
+    <form id="POST">
+      <input type="file" name="file" /> <input type="submit" value="Загрузить" />
+    </form>
+
+    <form id="DELETE">
+      <input type="text" name="text" placeholder="filename.ext" />
+      <input type="submit" value="Удалить" />
+    </form>
+
+    <form action="" id="GET">
+      <input type="text" name="file" placeholder="filename.ext" />
+      <input type="submit" value="Загрузить" />
+    </form>
+
+    <script>
+      document.onsubmit = function(event) {
+        event.preventDefault();
+        let form = event.target;
+        let fileUrl;
+        if (form.file) {
+          if (!form.file.value) return;
+          fileUrl = '/' + form.file.value.replace(/.*[\\\/]/, '');
+        } else if (form.text) {
+          if (!form.text.value) return;
+          fileUrl = '/' + form.text.value.replace(/.*[\\\/]/, '');
+        }
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.onload = function() {
+          alert(`${xhr.status}: ${xhr.responseText}`);
+        };
+
+        switch (event.target.id) {
+          case 'POST':
+            xhr.open('POST', fileUrl);
+            xhr.send(form.file.files[0]);
+            break;
+
+          case 'DELETE':
+            xhr.open('DELETE', fileUrl);
+            xhr.send();
+            break;
+
+          case 'GET':
+            xhr.open('GET', fileUrl);
+            xhr.send();
+            break;
+        }
+      };
+    </script>
+  </body>
+</html>
