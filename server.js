@@ -46,6 +46,16 @@ require('http')
 
         writeFile(FILES_FOLDER + fileName, req, res);
         return;
+      case 'DELETE':
+        fileName = permitFileName(pathname);
+        console.log('[Delete]: Filename: ', fileName, ' pathname: ', pathname);
+        if (!fileName) {
+          errorResponse(STATUS_CODES.UNSUPPORTED_PATH, res);
+          return;
+        }
+        removeFile(FILES_FOLDER + fileName, res);
+        return;
+
       default:
         res.statusCode = 502;
         res.end('Not implemented');
@@ -114,6 +124,18 @@ function writeFile(filePath, req, res) {
 
   writeFileStream.on('close', () => {
     console.log('WriteFile close');
+  });
+}
+
+function removeFile(fileName, res) {
+  fs.unlink(fileName, err => {
+    if (err) {
+      handleFileErrors(err, res);
+      return;
+    }
+
+    res.statusCode = STATUS_CODES.OK;
+    res.end('Delete');
   });
 }
 
